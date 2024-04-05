@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora PJU</title>
+    <style>
+
+        * {           
+            font-family: Verdana, Geneva, Tahoma, sans-serif;                                      
+        }
+
+        select {
+            margin-bottom: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div id="dados">
+
+    <h1>Remuneração PJU 2024</h1>
+
+    <!-- BLOCO DE CARGO-->
+
+    <label for="cargo">Cargo</label>
+    <select name="cargo" id="cargo">        
+        <option value="0" id="tec">Técnico</option>
+        <option value="1" id="anal">Analista</option>                      
+    </select>
+    <br>
+
+    <!-- BLOCO DE VENCIMENTOS TÉCNICO JUDICIÁRIO-->
+
+    <label for="venc">Classe/Padrão</label>
+    <select name="venc" id="venc">        
+        <option value="3554.03" id="venc1">1</option>
+        <option value="3660.66" id="venc2">2</option>
+        <option value="3770.47" id="venc3">3</option>
+        <option value="3985.39" id="venc4">4</option>
+        <option value="4104.96" id="venc5">5</option>
+        <option value="4228.11" id="venc6">6</option>
+        <option value="4354.94" id="venc7">7</option>
+        <option value="4485.59" id="venc8">8</option>
+        <option value="4741.26" id="venc9">9</option>
+        <option value="4883.52" id="venc10">10</option>
+        <option value="5030.02" id="venc11">11</option>
+        <option value="5180.92" id="venc12">12</option>
+        <option value="5336.35" id="venc13">13</option>               
+    </select>
+    <br>
+    
+    <!-- BLOCO DE ADICIONAL DE QUALIFICAÇÃO-->
+
+    <label for="AQ">Qualificação:</label>
+    <select name="AQ" id="AQ">
+        <option value="0">Não</option>
+        <!--<option value="0.05">Nível Superior (5%)</option>-->
+        <option value="0.075">Pós-Graduação (7,5%)</option>
+        <option value="0.1">Mestrado (10%)</option>
+        <option value="0.125">Doutorado (12,5%)</option>
+    </select>
+    <br>
+
+    <!-- BLOCO DE ADICIONAL DE CAPACITAÇÃO-->
+
+    <label for="AC">Capacitação:</label>
+    <select name="AC" id="AC">
+        <option value="0">Não</option>
+        <option value="0.01">120 horas (1%)</option>
+        <option value="0.02">240 horas (2%)</option>
+        <option value="0.03">360 horas (3%)</option>
+    </select>
+    <br>
+
+    <!-- BLOCO DE ADICIONAL DE FC/CJ-->
+
+    <label for="FC">FC/CJ:</label>
+    <select name="FC" id="FC">
+        <option value="0">Não</option>
+        <option value="2179.66">FC-4</option>
+        <option value="2508.30">FC-5</option>
+        <option value="3452.10">FC-6</option>
+        <option value="6731.35">CJ-1</option>
+        <option value="8313.37">CJ-2</option>
+        <option value="9450.62">CJ-3</option>
+        <option value="10668.61">CJ-4</option>
+    </select>
+    <br>
+
+    <!-- BLOCO DE AUXÍLIO PRÉ-ESCOLAR -->
+
+    <label for="APE">Aux.Creche:</label>
+    <select name="APE" id="APE">
+        <option value="0">Não</option>
+        <option value="1178.82">Sim</option>
+    <select>
+    <br>
+
+    <!-- BOTÃO-->
+
+    <button onclick="calcRem()" id="calcRem">Calcular</button>
+
+    </div>
+
+    <p style="display: none;" id="res">resultado</p>
+
+    <!-- BLOCO DE JAVA SCRIPT-->
+    
+    <script>
+
+        function novoCalc() {
+            document.getElementById('resultado').style.display = "none";
+            } 
+
+        function calcRem() {
+
+            let cargo = parseFloat(document.getElementById('cargo').value)
+            let venc = parseFloat(document.getElementById('venc').value)
+            let AQ = parseFloat(document.getElementById('AQ').value)
+            let AC = parseFloat(document.getElementById('AC').value)
+            let FC = parseFloat(document.getElementById('FC').value)
+            let APE = parseFloat(document.getElementById('APE').value)   
+            
+            if (cargo != 0) {venc = venc * 1.640722337}
+
+            let ACF = AC * venc
+            let AQF = AQ * venc         
+            let GAJ = venc * 1.4
+            let auxAlimentacao = 1393.1
+            let remTotal = venc + GAJ + AQF + ACF + FC
+            let remBruta = venc + GAJ + AQF + ACF + FC + auxAlimentacao  
+            let prev = 908.86
+            let IR = ((remTotal - prev) * 0.275 - 896)            
+            let remLiquida = remTotal - prev - IR + auxAlimentacao  
+
+            if (APE == 1178.82) {
+                remBruta = venc + GAJ + AQF + ACF + FC + auxAlimentacao + APE
+                remLiquida = remTotal - prev - IR + auxAlimentacao + APE
+            };           
+           
+            document.getElementById('res').style.display = "block";
+            document.getElementById('res').innerHTML =
+            `
+            <div id="resultado">
+            <p>Vencimento Básico: R$ ${venc.toFixed(2)}</p>
+            <p>Gratificação Judiciária: R$ ${GAJ.toFixed(2)}</p>            
+            <p>Auxílio Alimentação: R$ ${auxAlimentacao.toFixed(2)}</p>
+            <p id="res_AQF">Adicional de Qualificação: R$ ${AQF.toFixed(2)}</p>
+            <p id="res_ACF">Adicional de Capacitação: R$ ${ACF.toFixed(2)}</p>
+            <p id="res_FC">FC/CJ: R$ ${FC.toFixed(2)}</p>
+            <p id="res_APE">AuxílioCreche: R$ ${APE.toFixed(2)}</p>
+            <p style = "font-weight: bold">Remuneração Bruta: R$ ${remBruta.toFixed(2)}</p>
+            <p>Previdência: R$ ${prev.toFixed(2)}</p>
+            <p>Imposto de Renda: R$ ${IR.toFixed(2)}</p>
+            <p style = "font-weight: bold">Remuneração Líquida: R$ ${remLiquida.toFixed(2)}</p>
+            <button onclick="novoCalc()" id="novoCalc">Limpar</button>
+            </div>
+            `;
+        
+           if (AQ == 0) {document.getElementById('res_AQF').style.display = "none";} 
+           if (AC == 0) {document.getElementById('res_ACF').style.display = "none";} 
+           if (FC == 0) {document.getElementById('res_FC').style.display = "none";}
+           if (APE == 0) {document.getElementById('res_APE').style.display = "none";} 
+
+           }
+
+    </script>   
+
+</body>
+</html>
